@@ -507,12 +507,14 @@ if (typeof Slick === "undefined") {
     }
 
     function getCanvasNode(nodeClassName) {
-      var canvasNode = $canvas_1[0];
-      if(nodeClassName != undefined){
-        canvasNode = {"frozen": $canvas_0[0],
-                      "nonFrozen": $canvas_1[0]
-                     };
-      }
+      //TODO: SFA: This is the entry point into fixing the row reordering style issue
+      var canvasNode = $canvas_1[0]; //Original code
+      //New code not yet complete
+      //if(nodeClassName != undefined){
+      //  canvasNode = {"frozen": $canvas_0[0],
+      //                "nonFrozen": $canvas_1[0]
+      //               };
+      //}
       return canvasNode;
     }
 
@@ -2390,69 +2392,68 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    function handleScroll(scrollInfo) {
-      if(scrollInfo != undefined && scrollInfo.scrollTop != undefined){
-        $viewport_1[0].scrollTop = scrollInfo.scrollTop;
+	  function handleScroll(scrollInfo) {
+		  if(scrollInfo != undefined && scrollInfo.scrollTop != undefined){
+		  	  $viewport_1[0].scrollTop = scrollInfo.scrollTop;
+		  }
+		  scrollTop = $viewport_1[0].scrollTop;
+		  scrollLeft = $viewport_1[0].scrollLeft;
+		  var vScrollDist = Math.abs(scrollTop - prevScrollTop);
+		  var hScrollDist = Math.abs(scrollLeft - prevScrollLeft);
+
+		  if (hScrollDist) {
+			  prevScrollLeft = scrollLeft;
+			  $headerScroller_1[0].scrollLeft = scrollLeft;
+			  $topPanelScroller_1[0].scrollLeft = scrollLeft;
+			  $headerRowScroller_1[0].scrollLeft = scrollLeft;
+		  }
+
+		  if (vScrollDist) {
+			  vScrollDir = prevScrollTop < scrollTop ? 1 : -1;
+			  prevScrollTop = scrollTop;
+
+			  if (options.numberOfColumnsToFreeze > 0) {
+				  $viewport_0[0].scrollTop = scrollTop;
+			  }
+
+			  // switch virtual pages if needed
+			  if (vScrollDist < viewportH_1) {
+				  scrollTo(scrollTop + offset);
+			  } else {
+				  var oldOffset = offset;
+				  if (h == viewportH_1) {
+					  page = 0;
+				  } else {
+					  page = Math.min(n - 1, Math.floor(scrollTop * ((th - viewportH_1) / (h - viewportH_1)) * (1 / ph)));
+				  }
+				  offset = Math.round(page * cj);
+				  if (oldOffset != offset) {
+					  invalidateAllRows();
+				  }
+			  }
+		  }
+
+		  if (hScrollDist || vScrollDist) {
+			  if (h_render) {
+				  clearTimeout(h_render);
+			  }
+
+			  if (Math.abs(lastRenderedScrollTop - scrollTop) > 20 ||
+				  Math.abs(lastRenderedScrollLeft - scrollLeft) > 20) {
+				  if (options.forceSyncScrolling || (
+					  Math.abs(lastRenderedScrollTop - scrollTop) < viewportH_1 &&
+						  Math.abs(lastRenderedScrollLeft - scrollLeft) < viewportW_1)) {
+					  render();
+				  } else {
+					  h_render = setTimeout(render, 50);
+				  }
+
+				  trigger(self.onViewportChanged, {});
+			  }
+		  }
+
+		  trigger(self.onScroll, {scrollLeft: scrollLeft, scrollTop: scrollTop});
 	  }
-	  
-      scrollTop = $viewport_1[0].scrollTop;
-      scrollLeft = $viewport_1[0].scrollLeft;
-      var vScrollDist = Math.abs(scrollTop - prevScrollTop);
-      var hScrollDist = Math.abs(scrollLeft - prevScrollLeft);
-
-      if (hScrollDist) {
-        prevScrollLeft = scrollLeft;
-        $headerScroller[0].scrollLeft = scrollLeft;
-        $topPanelScroller[0].scrollLeft = scrollLeft;
-        $headerRowScroller[0].scrollLeft = scrollLeft;
-      }
-
-      if (vScrollDist) {
-        vScrollDir = prevScrollTop < scrollTop ? 1 : -1;
-        prevScrollTop = scrollTop;
-
-        if (options.numberOfColumnsToFreeze > 0) {
-          $viewport_0[0].scrollTop = scrollTop;
-        }
-
-        // switch virtual pages if needed
-        if (vScrollDist < viewportH) {
-          scrollTo(scrollTop + offset);
-        } else {
-          var oldOffset = offset;
-          if (h == viewportH) {
-            page = 0;
-          } else {
-            page = Math.min(n - 1, Math.floor(scrollTop * ((th - viewportH) / (h - viewportH)) * (1 / ph)));
-          }
-          offset = Math.round(page * cj);
-          if (oldOffset != offset) {
-            invalidateAllRows();
-          }
-        }
-      }
-
-      if (hScrollDist || vScrollDist) {
-        if (h_render) {
-          clearTimeout(h_render);
-        }
-
-        if (Math.abs(lastRenderedScrollTop - scrollTop) > 20 ||
-            Math.abs(lastRenderedScrollLeft - scrollLeft) > 20) {
-          if (options.forceSyncScrolling || (
-              Math.abs(lastRenderedScrollTop - scrollTop) < viewportH &&
-              Math.abs(lastRenderedScrollLeft - scrollLeft) < viewportW)) {
-            render();
-          } else {
-            h_render = setTimeout(render, 50);
-          }
-
-          trigger(self.onViewportChanged, {});
-        }
-      }
-
-      trigger(self.onScroll, {scrollLeft: scrollLeft, scrollTop: scrollTop});
-    }
 
     function asyncPostProcessRows() {
       while (postProcessFromRow <= postProcessToRow) {
