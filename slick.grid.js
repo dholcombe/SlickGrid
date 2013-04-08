@@ -2390,13 +2390,13 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    function handleScroll() {
+    function handleScroll(scrollInfo) {
       if(scrollInfo != undefined && scrollInfo.scrollTop != undefined){
         $viewport_1[0].scrollTop = scrollInfo.scrollTop;
 	  }
 	  
-      scrollTop = $viewport[0].scrollTop;
-      scrollLeft = $viewport[0].scrollLeft;
+      scrollTop = $viewport_1[0].scrollTop;
+      scrollLeft = $viewport_1[0].scrollLeft;
       var vScrollDist = Math.abs(scrollTop - prevScrollTop);
       var hScrollDist = Math.abs(scrollLeft - prevScrollLeft);
 
