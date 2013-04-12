@@ -114,44 +114,45 @@ if (typeof Slick === "undefined") {
     var initialized = false;
     var uid = "slickgrid_" + Math.round(1000000 * Math.random());
     var self = this;
-    var $container_1;
     var $focusSink;
+    
+    var $outerContainer;
+    var $container_0;
+    var $container_1;
+    var $headerScroller_0;
     var $headerScroller_1;
+    var $headers_0;
     var $headers_1;
+    var $headerRow_0;
     var $headerRow_1;
+    var $headerRowScroller_0;
     var $headerRowScroller_1;
+    var $headerRowSpacer_0;
     var $headerRowSpacer_1;
+    var $topPanelScroller_0;
     var $topPanelScroller_1;
+    var $topPanel_0;
     var $topPanel_1;
+    var $viewport_0;
     var $viewport_1;
+    var $canvas_0;
     var $canvas_1;
+    var canvasWidth_0;
+    var canvasWidth_1;
+    
     var $style;
     var $boundAncestors;
     var stylesheet, columnCssRulesL, columnCssRulesR;
     var viewportH_1;
     var viewportW_1;
-    var canvasWidth_1;
+    
     var viewportHasHScroll_1;
     var viewportHasVScroll_1;
+    //viewport_0 will never have scroll bars so the above two vars are only necessary for viewport_1.
     var headerColumnWidthDiff = 0, headerColumnHeightDiff = 0, // border+padding
-      cellWidthDiff = 0, cellHeightDiff = 0;
+    	cellWidthDiff = 0, cellHeightDiff = 0;
     var absoluteColumnMinWidth;
     var numberOfRows = 0;
-
-    // FreezeColumns variables - Begin
-    var $outerContainer;
-    var $container_0;
-    var $headerScroller_0;
-    var $headers_0;
-    var $headerRow_0;
-    var $headerRowScroller_0;
-    var  $headerRowSpacer_0;
-    var $topPanelScroller_0;
-    var $topPanel_0;
-    var $viewport_0;
-    var $canvas_0;
-    var canvasWidth_0;
-    // FreezeColumns variables - End
 
     var activePosX;
     var activeRow, activeCell;
@@ -180,10 +181,7 @@ if (typeof Slick === "undefined") {
     var sortColumns = [];
     var columnPosLeft = [];
     var columnPosRight = [];
-
-
-
-
+    
     // async call handles
     var h_editorLoader = null;
     var h_render = null;
@@ -196,12 +194,8 @@ if (typeof Slick === "undefined") {
     var counter_rows_rendered = 0;
     var counter_rows_removed = 0;
 
-
-
-
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Initialization
-
     function init() {
       $outerContainer = $(container);
       $container_1 = $outerContainer;
@@ -239,14 +233,12 @@ if (typeof Slick === "undefined") {
         "cancelCurrentEdit": cancelCurrentEdit
       };
 
-      $outerContainer
-        .empty()
+      $outerContainer.empty()
         .css("overflow", "hidden")
         .css("outline", 0)
         .addClass(uid)
         .addClass("ui-widget");
-      $container_1
-        .empty()
+      $container_1.empty()
         .css("overflow", "hidden")
         .css("outline", 0)
         .addClass(uid)
@@ -266,43 +258,37 @@ if (typeof Slick === "undefined") {
       // FreezeColumns - Add outerContainer and frozen column structure - Begin
       if (options.numberOfColumnsToFreeze > 0) {
         // Calculate frozen and nonFrozen widths
-        var containerWidth_0 = 0;
-        var containerWidth_1 = 0;
+        var totalWidthOfFrozenColumns = 0;
+        var container_1Width = 0;
         var outerContainerWidth = parseFloat($.css($outerContainer[0], "width", true));
         var outerContainerHeight = parseFloat($.css($outerContainer[0], "height", true));
         for (var i = 0, len = columns.length; i < len; i++) {
           if (i < options.numberOfColumnsToFreeze) {
-            containerWidth_0 += columns[i].width;
+            totalWidthOfFrozenColumns += columns[i].width;
           } else {
-            containerWidth_1 += columns[i].width;
+            container_1Width += columns[i].width;
           }
         }
         //if (leftWidth + rightWidth < outerContainerWidth) {
         // The container is wide enough to display all columns, so turn off freezeColumns
         //   options.numberOfColumnsToFreeze = 0;
         //} else {
-        containerWidth_1 = outerContainerWidth - containerWidth_0;
-        $container_0 = $("<div class='container_0'></div>")
-          .css("overflow", "hidden")
-          .css("outline", 0)
-          .css("position", "absolute")
-          .css("width", outerContainerWidth) //We don't use containerWidth_0 because it causes clipping on the rightmost column
+        container_1Width = outerContainerWidth - totalWidthOfFrozenColumns;
+        $container_0 = $("<div class='container_0'></div>").css("overflow", "hidden")
+          .css("outline", 0).css("position", "absolute")
+          .css("width", outerContainerWidth)
           .css("height", outerContainerHeight)
           .css("left", 0)
           .css("top", 0)
-          .addClass(uid)
-          .addClass("ui-widget")
+          .addClass(uid).addClass("ui-widget")
           .appendTo($outerContainer);
-        $container_1 = $("<div class='container_1'></div>")
-          .css("overflow", "hidden")
-          .css("outline", 0)
-          .css("position", "absolute")
-          .css("width", containerWidth_1)
+        $container_1 = $("<div class='container_1'></div>").css("overflow", "hidden")
+          .css("outline", 0).css("position", "absolute")
+          .css("width", container_1Width)
           .css("height", outerContainerHeight)
-          .css("left", containerWidth_0)
+          .css("left", totalWidthOfFrozenColumns)
           .css("top", 0)
-          .addClass(uid)
-          .addClass("ui-widget")
+          .addClass(uid).addClass("ui-widget")
           .appendTo($outerContainer);
 
         $headerScroller_0 = $("<div class='headerScroller_0 slick-header ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container_0);
@@ -314,8 +300,6 @@ if (typeof Slick === "undefined") {
 
         $topPanelScroller_0 = $("<div class='topPanelScroller_0 slick-top-panel-scroller ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container_0);
         $topPanel_0 = $("<div class='topPanel_0 slick-top-panel' style='width:10000px' />").appendTo($topPanelScroller_0);
-
-
 
         if (!options.showTopPanel) {
           $topPanelScroller_0.hide();
@@ -329,7 +313,6 @@ if (typeof Slick === "undefined") {
         $canvas_0 = $("<div class='canvas_0 grid-canvas' />").appendTo($viewport_0);
       }
       // FreezeColumns - Add outerContainer and frozen column structure - End
-
       $headerScroller_1 = $("<div class='headerScroller_1 slick-header ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container_1);
       $headers_1 = $("<div class='headers_1 slick-header-columns' style='left:-1000px' />").appendTo($headerScroller_1);
 
@@ -408,21 +391,16 @@ if (typeof Slick === "undefined") {
         resizeCanvas();
         bindAncestorScrollEvents();
 
-        $outerContainer
-          .bind("resize.slickgrid", resizeCanvas);
-        $container_1
-          .bind("resize.slickgrid", resizeCanvas);
-        $viewport_1
-          .bind("scroll", handleScroll);
+        $outerContainer.bind("resize.slickgrid", resizeCanvas);
+        $container_1.bind("resize.slickgrid", resizeCanvas);
+        $viewport_1.bind("scroll", handleScroll);
         $headerScroller_1
           .bind("contextmenu", handleHeaderContextMenu)
           .bind("click", handleHeaderClick)
           .delegate(".slick-header-column", "mouseenter", handleHeaderMouseEnter)
           .delegate(".slick-header-column", "mouseleave", handleHeaderMouseLeave);
-        $headerRowScroller_1
-          .bind("scroll", handleHeaderRowScroll);
-        $focusSink
-          .bind("keydown", handleKeyDown);
+        $headerRowScroller_1.bind("scroll", handleHeaderRowScroll);
+        $focusSink.bind("keydown", handleKeyDown);
         $canvas_1
           .bind("keydown", handleKeyDown)
           .bind("click", handleClick)
@@ -436,10 +414,8 @@ if (typeof Slick === "undefined") {
           .delegate(".slick-cell", "mouseleave", handleMouseLeave);
 
         if(options.numberOfColumnsToFreeze > 0){
-          $container_0
-            .bind("resize.slickgrid", resizeCanvas);
-          $viewport_0
-            .bind("mousewheel", function(e) {
+          $container_0.bind("resize.slickgrid", resizeCanvas);
+          $viewport_0.bind("mousewheel", function(e) {
               var wheelDelta = e.originalEvent.wheelDelta;
               var newScrollTop = scrollTop - wheelDelta;
               if(newScrollTop < 0) {
@@ -452,8 +428,7 @@ if (typeof Slick === "undefined") {
             .bind("click", handleHeaderClick)
             .delegate(".slick-header-column", "mouseenter", handleHeaderMouseEnter)
             .delegate(".slick-header-column", "mouseleave", handleHeaderMouseLeave);
-          $headerRowScroller_0
-            .bind("scroll", handleHeaderRowScroll);
+          $headerRowScroller_0.bind("scroll", handleHeaderRowScroll);
           $canvas_0
             .bind("keydown", handleKeyDown)
             .bind("click", handleClick)
@@ -466,7 +441,6 @@ if (typeof Slick === "undefined") {
             .delegate(".slick-cell", "mouseenter", handleMouseEnter)
             .delegate(".slick-cell", "mouseleave", handleMouseLeave);
         }
-
       }
     }
 
@@ -595,8 +569,6 @@ if (typeof Slick === "undefined") {
         $headers_1.width(headersWidthObj.nonFrozen);
         viewportHasHScroll_1 = (canvasWidth_1 > viewportW_1 - scrollbarDimensions.width);
       }
-
-
       $headerRowSpacer_1.width(canvasWidth_1 + (viewportHasVScroll_1 ? scrollbarDimensions.width : 0));
 
       if (canvasWidth_1 != oldCanvasWidth_1 || forceColumnWidthsUpdate || canvasWidthDelta_0 != 0) {
@@ -606,8 +578,7 @@ if (typeof Slick === "undefined") {
 
     function disableSelection($target) {
       if ($target && $target.jquery) {
-        $target
-          .attr("unselectable", "on")
+        $target.attr("unselectable", "on")
           .css("MozUserSelect", "none")
           .bind("selectstart.ui", function () {
             return false;
@@ -711,8 +682,7 @@ if (typeof Slick === "undefined") {
       var $headerRowObject;
       if (!options.numberOfColumnsToFreeze) {
         $headerRowObject = $headerRow_1;
-      } else {
-        // Combine frozen and nonFrozen
+      } else { // Combine frozen and nonFrozen
         $headerRowObject = $($.merge( $.merge([], $headerRow_0), $headerRow_1));
       }
       var $header = $headerRowObject.children().eq(idx);
@@ -829,7 +799,6 @@ if (typeof Slick === "undefined") {
           }
 
           var sortOpts = null;
-          //var i = 0;
           for (var i = 0; i < sortColumns.length; i++) {
             if (sortColumns[i].columnId == column.id) {
               sortOpts = sortColumns[i];
@@ -1245,7 +1214,7 @@ if (typeof Slick === "undefined") {
         rules.push("." + uid + " .r" + i + " { }");
       }
 
-      if ($style[0].styleSheet) { // IE
+      if ($style[0].styleSheet) { // IE 8 and below. Not needed in IE 9 or IE 10 standards mode.
         $style[0].styleSheet.cssText = rules.join(" ");
       } else {
         $style[0].appendChild(document.createTextNode(rules.join(" ")));
@@ -1417,29 +1386,23 @@ if (typeof Slick === "undefined") {
     }
 
     function applyColumnHeaderWidths() {
-      function applyWidthToHeaders(header) {
-        var isFrozenColumn = isPartOfAFrozenColumn(header);
-        var headers = header.children();
-        for (var i = 0, h, ii = headers.length; i < ii; i++) {
-          h = $(headers[i]);
-          var columnIndex = getIndexOffset(isFrozenColumn, i);
-          if (h.width() !== columns[columnIndex].width - headerColumnWidthDiff) {
-            h.width(columns[columnIndex].width - headerColumnWidthDiff);
-          }
-        }
-      }
-
-      if (!initialized) { return; }
-
-      //Frozen Columns
-      if (options.numberOfColumnsToFreeze > 0) {
-        applyWidthToHeaders($headers_0);
-      }
-
-      //NonFrozen Columns
-      applyWidthToHeaders($headers_1);
-
-      updateColumnCaches();
+    	function applyWidthToHeaders(header) {
+        	var isFrozenColumn = isPartOfAFrozenColumn(header);
+        	var headers = header.children();
+        	for (var i = 0, h, ii = headers.length; i < ii; i++) {
+          		h = $(headers[i]);
+          		var columnIndex = getIndexOffset(isFrozenColumn, i);
+          		if (h.width() !== columns[columnIndex].width - headerColumnWidthDiff) {
+          			h.width(columns[columnIndex].width - headerColumnWidthDiff);
+          		}
+          	}
+		}
+		if (!initialized) { return; }
+		if (options.numberOfColumnsToFreeze > 0) {
+			applyWidthToHeaders($headers_0); //Frozen Columns
+		}
+		applyWidthToHeaders($headers_1);//NonFrozen Columns
+		updateColumnCaches();
     }
 
     function applyColumnWidths() {
@@ -1456,13 +1419,11 @@ if (typeof Slick === "undefined") {
           //FrozenColumns
           rule.left.style.left = frozenWidth + "px";
           rule.right.style.right = (canvasWidth_0 - frozenWidth - w) + "px";
-
           frozenWidth += columns[i].width;
         } else {
           //NonFrozenColumns
           rule.left.style.left = nonFrozenWidth + "px";
           rule.right.style.right = (canvasWidth_1 - nonFrozenWidth - w) + "px";
-
           nonFrozenWidth += columns[i].width;
         }
       }
@@ -1762,28 +1723,26 @@ if (typeof Slick === "undefined") {
       }
 
       var colspan, m;
-      for (var i = 0, ii = columns.length; i < ii; i++) {
+      for (var i = 0, numberOfColumns = columns.length; i < numberOfColumns; i++) {
         m = columns[i];
         colspan = 1;
         if (metadata && metadata.columns) {
           var columnData = metadata.columns[m.id] || metadata.columns[i];
           colspan = (columnData && columnData.colspan) || 1;
           if (colspan === "*") {
-            colspan = ii - i;
+            colspan = numberOfColumns - i;
           }
         }
 
-        // Do not render cells outside of the viewport.
-        // Do render frozen columns - CLICK CUSTOM CODE
-        if (i < numberOfColumnsToFreeze || columnPosRight[Math.min(ii - 1, i + colspan - 1)] > range.leftPx) { //CLICK CUSTOM CODE
-          if (columnPosLeft[i] > range.rightPx) {
-            // All columns to the right are outside the range.
+		// Always render frozen columns
+		if(i < numberOfColumnsToFreeze){
+			appendCellHtml(stringArray, row, i, colspan);
+		}else if (i < numberOfColumnsToFreeze || columnPosRight[Math.min(numberOfColumns - 1, i + colspan - 1)] > range.leftPx) {// Do not render cells outside of viewport_1.
+          if (columnPosLeft[i] > range.rightPx) {// All columns to the right are outside the range.
             break;
           }
-
           appendCellHtml(stringArray, row, i, colspan);
         }
-
         if (colspan > 1) {
           i += (colspan - 1);
         }
@@ -1812,7 +1771,7 @@ if (typeof Slick === "undefined") {
       }
 
       var numberOfColumnsToFreeze = options.numberOfColumnsToFreeze;
-            // FreezeColumns - Add the cells html depending on the cell index - frozen or not
+      // FrozenColumns - Add the cells html depending on the cell index - frozen or not
       if (cell < numberOfColumnsToFreeze) {
         stringArray.frozen.push("<div class='" + cellCss + "'>");
       } else {
@@ -1869,7 +1828,7 @@ if (typeof Slick === "undefined") {
         return;
       }
       var childToRemove = cacheEntry.rowNode;
-      // FreezeColumns - remove row from frozen and nonFrozen canvas_x
+      // Frozen Columns - remove row from frozen and nonFrozen canvas_x
       if (options.numberOfColumnsToFreeze > 0) {
         if(childToRemove.nonFrozen){
           $canvas_1[0].removeChild(childToRemove.nonFrozen);
@@ -1971,7 +1930,7 @@ if (typeof Slick === "undefined") {
       viewportW_1 = parseFloat($.css($outerContainer[0], "width", true));
       if (!options.autoHeight) {
         $viewport_1.height(viewportH_1);
-        // FreezeColumns - also set left viewport height
+        // Frozen Columns - also set left viewport height
         if (options.numberOfColumnsToFreeze) {
           $viewport_0.height(viewportH_1);
         }
@@ -2027,7 +1986,7 @@ if (typeof Slick === "undefined") {
       if (h !== oldH) {
         $canvas_1.css("height", h);
         scrollTop = $viewport_1[0].scrollTop;
-        // FreezeColumns - Set left viewport height to h + scrollbar height
+        // Frozen Columns - Set left viewport height to h + scrollbar height
         if (options.numberOfColumnsToFreeze > 0) {
           $canvas_0.css("height", h + scrollbarDimensions.height);
         }
@@ -2055,6 +2014,15 @@ if (typeof Slick === "undefined") {
       updateCanvasWidth(false);
     }
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Returns an object with the following values.
+	//	top		- row number of the top visible row. applicable to viewport_0 and viewport_1.
+	//	bottom	- row number of the bottom visible row. applicable to viewport_0 and viewport_1.
+	//	leftPx	- pixel number of the leftmost visible pixel. applicable to viewPort_1 only.
+	//			As viewport_0 is frozen it is assumed to always be visible
+	//	rightPx	- pixel number. applicable to viewPort_1 only.
+	//			As viewport_0 is frozen it is assumed to always be visible
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
     function getVisibleRange(viewportTop, viewportLeft) {
       if (viewportTop == null) {
         viewportTop = scrollTop;
@@ -2070,7 +2038,16 @@ if (typeof Slick === "undefined") {
         rightPx: viewportLeft + viewportW_1
       };
     }
-
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Returns an object with the following values. 
+	//	top		- row number. applicable to viewport_0 and viewport_1.
+	//	bottom	- row number. applicable to viewport_0 and viewport_1.
+	//	leftPx	- pixel number. applicable to viewPort_1 only. As viewport_0 is frozen it
+	//			is assumed to always be rendered
+	//	rightPx	- pixel number. applicable to viewPort_1 only. As viewport_0 is frozen it
+	//			is assumed to always be rendered
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
     function getRenderedRange(viewportTop, viewportLeft) {
       var range = getVisibleRange(viewportTop, viewportLeft);
       var buffer = Math.round(viewportH_1 / options.rowHeight);
@@ -2086,16 +2063,12 @@ if (typeof Slick === "undefined") {
         range.top -= minBuffer;
         range.bottom += minBuffer;
       }
-
       range.top = Math.max(0, range.top);
       range.bottom = Math.min(options.enableAddRow ? getDataLength() : getDataLength() - 1, range.bottom);
-
       range.leftPx -= viewportW_1;
       range.rightPx += viewportW_1;
-
       range.leftPx = Math.max(0, range.leftPx);
       range.rightPx = Math.min(canvasWidth_1, range.rightPx);
-
       return range;
     }
 
@@ -2363,18 +2336,17 @@ if (typeof Slick === "undefined") {
     function render() {
       if (!initialized) { return; }
       var visible = getVisibleRange();
-      var rendered = getRenderedRange();
+      var renderedRange = getRenderedRange();
 
-      // remove rows no longer in the viewport
-      cleanupRows(rendered);
+      cleanupRows(renderedRange);
 
       // add new rows & missing cells in existing rows
       if (lastRenderedScrollLeft != scrollLeft) {
-        cleanUpAndRenderCells(rendered);
+        cleanUpAndRenderCells(renderedRange);
       }
 
       // render missing rows
-      renderRows(rendered);
+      renderRows(renderedRange);
 
       postProcessFromRow = visible.top;
       postProcessToRow = Math.min(options.enableAddRow ? getDataLength() : getDataLength() - 1, visible.bottom);
@@ -3436,14 +3408,14 @@ if (typeof Slick === "undefined") {
 
       //CLICKHURON CUSTOM CODE-START
       if (typeof data[row] === 'object') {
-            var dataRow = data[row];
-            var dataCell = dataRow[cell-1];
-            if (dataCell) {
-              if (typeof dataCell.cellPotentiallyEditable === "boolean") {
-                return dataCell.cellPotentiallyEditable;
-              }
-            }
-          }
+      	var dataRow = data[row];
+    	var dataCell = dataRow[cell-1];
+       	if (dataCell) {
+   			if (typeof dataCell.cellPotentiallyEditable === "boolean") {
+            	return dataCell.cellPotentiallyEditable;
+      		}
+      	}
+  	  }
       //CLICKHURON CUSTOM CODE-END
 
       return true;
