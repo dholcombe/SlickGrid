@@ -355,7 +355,7 @@ if (typeof Slick === "undefined") {
 
       $canvas_1 = $("<div class='canvas_1 grid-canvas' />").appendTo($viewport_1);
 
-      $focusSink2 = $focusSink.clone().appendTo($container);
+      $focusSink2 = $focusSink.clone().appendTo($outerContainer);
       		
       if (!options.explicitInitialization) {
         finishInitialization();
@@ -2646,6 +2646,7 @@ if (typeof Slick === "undefined") {
         // ignore exceptions - setting the original event's keycode throws access denied exception for "Ctrl"
         // (hitting control key only, nothing else), "Shift" (maybe others)
 		catch (error) {}
+	  }
     }
 
     function handleClick(e) {
