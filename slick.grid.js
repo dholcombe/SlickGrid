@@ -114,7 +114,7 @@ if (typeof Slick === "undefined") {
     var initialized = false;
     var uid = "slickgrid_" + Math.round(1000000 * Math.random());
     var self = this;
-    var $focusSink;
+    var $focusSink, $focusSink2;
     
     var $outerContainer;
     var $container_0;
@@ -154,6 +154,7 @@ if (typeof Slick === "undefined") {
     var absoluteColumnMinWidth;
     var numberOfRows = 0;
 
+    var tabbingDirection = 1;
     var activePosX;
     var activeRow, activeCell;
     var activeCellNode = null;
@@ -354,6 +355,8 @@ if (typeof Slick === "undefined") {
 
       $canvas_1 = $("<div class='canvas_1 grid-canvas' />").appendTo($viewport_1);
 
+      $focusSink2 = $focusSink.clone().appendTo($container);
+      		
       if (!options.explicitInitialization) {
         finishInitialization();
       }
@@ -400,7 +403,8 @@ if (typeof Slick === "undefined") {
           .delegate(".slick-header-column", "mouseenter", handleHeaderMouseEnter)
           .delegate(".slick-header-column", "mouseleave", handleHeaderMouseLeave);
         $headerRowScroller_1.bind("scroll", handleHeaderRowScroll);
-        $focusSink.bind("keydown", handleKeyDown);
+        $focusSink.add($focusSink2)
+        	.bind("keydown", handleKeyDown);
         $canvas_1
           .bind("keydown", handleKeyDown)
           .bind("click", handleClick)
@@ -2830,7 +2834,11 @@ if (typeof Slick === "undefined") {
     }
 
     function setFocus() {
-      $focusSink[0].focus();
+      if (tabbingDirection == -1){
+        $focusSink[0].focus();
+      } else {
+        $focusSink2[0].focus();
+      }
     }
 
     function scrollCellIntoView(row, cell) {
@@ -3368,6 +3376,16 @@ if (typeof Slick === "undefined") {
       }
       setFocus();
 
+      var tabbingDirections = {
+        "up": -1,
+        "down": 1,
+        "left": -1,
+        "right": 1,
+        "prev": -1,
+        "next": 1
+      };
+      tabbingDirection = tabbingDirections[dir];
+      
       var stepFunctions = {
         "up": gotoUp,
         "down": gotoDown,
