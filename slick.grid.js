@@ -3454,18 +3454,6 @@ if (typeof Slick === "undefined") {
         return columnMetadata[cell].focusable;
       }
 
-      //HURON CUSTOM CODE-START
-      if (typeof data[row] === 'object') {
-      	var dataRow = data[row];
-    	var dataCell = dataRow[cell-1];
-       	if (dataCell) {
-   			if (typeof dataCell.cellPotentiallyEditable === "boolean") {
-            	return dataCell.cellPotentiallyEditable;
-      		}
-      	}
-  	  }
-      //HURON CUSTOM CODE-END
-
       return columns[cell].focusable;
     }
 
