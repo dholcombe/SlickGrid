@@ -1635,6 +1635,14 @@ if (typeof Slick === "undefined") {
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Rendering / Scrolling
 
+    function getRowTop(row) {
+      return options.rowHeight * row - offset;
+    }
+
+    function getRowFromPosition(y) {
+      return Math.floor((y + offset) / options.rowHeight);
+    }
+	
     function scrollTo(y) {
       y = Math.max(y, 0);
       y = Math.min(y, th - viewportH_1 + (viewportHasHScroll_1 ? scrollbarDimensions.height : 0));
@@ -1723,7 +1731,7 @@ if (typeof Slick === "undefined") {
         rowCss += " " + metadata.cssClasses;
       }
 
-      var columnDiv = "<div class='ui-widget-content " + rowCss + "' row='" + row + "' style='top:" + (options.rowHeight * row - offset) + "px'>"; //CLICK CUSTOM CODE
+      var columnDiv = "<div class='ui-widget-content " + rowCss + "' row='" + row + "' style='top:" + getRowTop(row) + "px'>"; //CLICK CUSTOM CODE
       stringArray.nonFrozen.push(columnDiv);
       if (numberOfColumnsToFreeze > 0) {
         stringArray.frozen.push(columnDiv);
@@ -2039,8 +2047,8 @@ if (typeof Slick === "undefined") {
       }
 
       return {
-        top: Math.floor((viewportTop + offset) / options.rowHeight),
-        bottom: Math.ceil((viewportTop + offset + viewportH_1) / options.rowHeight),
+        top: getRowFromPosition(viewportTop),
+        bottom: getRowFromPosition(viewportTop + viewportH_1),
         leftPx: viewportLeft,
         rightPx: viewportLeft + viewportW_1
       };
@@ -2334,7 +2342,7 @@ if (typeof Slick === "undefined") {
 
     function updateRowPositions() {
       for (var row in rowsCache) {
-        var rowTop = (row * options.rowHeight - offset) + "px";
+        var rowTop = getRowTop(row) + "px";
         rowsCache[row].rowNode.frozen.style.top = rowTop;
         rowsCache[row].rowNode.nonFrozen.style.top = rowTop;
       }
@@ -2749,7 +2757,7 @@ if (typeof Slick === "undefined") {
     }
 
     function getCellFromPoint(x, y) {
-      var row = Math.floor((y + offset) / options.rowHeight);
+      var row = getRowFromPosition(y);
       var cell = 0;
 
       var w = 0;
@@ -2814,7 +2822,7 @@ if (typeof Slick === "undefined") {
         return null;
       }
 
-      var y1 = row * options.rowHeight - offset;
+      var y1 = getRowTop(row);
       var y2 = y1 + options.rowHeight - 1;
       var x1 = 0;
       for (var i = 0; i < cell; i++) {
