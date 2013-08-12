@@ -2845,7 +2845,9 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    function scrollCellIntoView(row, cell) {
+    function scrollCellIntoView(row, cell, doPaging) {
+      scrollRowIntoView(row, doPaging);
+	  
       var colspan = getColspan(row, cell);
       var left = columnPosLeft[cell],
         right = columnPosRight[cell + (colspan > 1 ? colspan - 1 : 0)],
@@ -3402,8 +3404,7 @@ if (typeof Slick === "undefined") {
       var pos = stepFn(activeRow, activeCell, activePosX);
       if (pos) {
         var isAddNewRow = (pos.row == getDataLength());
-        scrollRowIntoView(pos.row, !isAddNewRow);
-        scrollCellIntoView(pos.row, pos.cell);
+        scrollCellIntoView(pos.row, pos.cell, !isAddNewRow);
         setActiveCellInternal(getCellNode(pos.row, pos.cell), isAddNewRow || options.autoEdit);
         activePosX = pos.posX;
 		return true;
@@ -3431,8 +3432,7 @@ if (typeof Slick === "undefined") {
         return;
       }
 
-      scrollRowIntoView(row, false);
-      scrollCellIntoView(row, cell);
+      scrollCellIntoView(row, cell, false);
       setActiveCellInternal(getCellNode(row, cell), false);
     }
 
@@ -3485,8 +3485,7 @@ if (typeof Slick === "undefined") {
         return;
       }
 
-      scrollRowIntoView(row, false);
-      scrollCellIntoView(row, cell);
+      scrollCellIntoView(row, cell, false);
 
       var newCell = getCellNode(row, cell);
 
