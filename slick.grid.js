@@ -859,9 +859,7 @@ if (typeof Slick === "undefined") {
 
     function setupColumnReorder() {
       if(options.numberOfColumnsToFreeze > 0) {
-      // force init jquery ui sortable +1.9
-        $headers_0.sortable();
-        $headers_0.sortable("destroy");
+        $headers_0.filter(":ui-sortable").sortable("destroy");
         $headers_0.sortable({
         containment: "parent",
         axis: "x",
@@ -905,9 +903,7 @@ if (typeof Slick === "undefined") {
         }
       });
       }
-      // force init jquery ui sortable +1.9
-      $headers_1.sortable();
-      $headers_1.sortable("destroy");
+      $headers_1.filter(":ui-sortable").sortable("destroy");
       $headers_1.sortable({
         containment: "parent",
         axis: "x",
