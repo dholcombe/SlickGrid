@@ -96,7 +96,8 @@ if (typeof Slick === "undefined") {
       minWidth: 30,
       rerenderOnResize: false,
       headerCssClass: null,
-      defaultSortAsc: true
+      defaultSortAsc: true,
+	  focusable: true
     };
 
     // scroller
@@ -3453,11 +3454,7 @@ if (typeof Slick === "undefined") {
         return columnMetadata[cell].focusable;
       }
 
-      if (typeof columns[cell].focusable === "boolean") {
-        return columns[cell].focusable;
-      }
-
-      //CLICKHURON CUSTOM CODE-START
+      //HURON CUSTOM CODE-START
       if (typeof data[row] === 'object') {
       	var dataRow = data[row];
     	var dataCell = dataRow[cell-1];
@@ -3467,9 +3464,9 @@ if (typeof Slick === "undefined") {
       		}
       	}
   	  }
-      //CLICKHURON CUSTOM CODE-END
+      //HURON CUSTOM CODE-END
 
-      return true;
+      return columns[cell].focusable;
     }
 
     function canCellBeSelected(row, cell) {
