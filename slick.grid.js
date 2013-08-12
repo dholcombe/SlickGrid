@@ -863,6 +863,7 @@ if (typeof Slick === "undefined") {
         $headers_0.filter(":ui-sortable").sortable("destroy");
         $headers_0.sortable({
         containment: "parent",
+		distance: 3,
         axis: "x",
         cursor: "default",
         tolerance: "intersection",
@@ -907,6 +908,7 @@ if (typeof Slick === "undefined") {
       $headers_1.filter(":ui-sortable").sortable("destroy");
       $headers_1.sortable({
         containment: "parent",
+		distance: 3,
         axis: "x",
         cursor: "default",
         tolerance: "intersection",
