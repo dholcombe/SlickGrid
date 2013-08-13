@@ -1279,11 +1279,12 @@ if (typeof Slick === "undefined") {
       while(i--) {
         unregisterPlugin(plugins[i]);
       }
-      if (options.enableColumnReorder && $headers_0.sortable && options.numberOfColumnsToFreeze > 0) {
-        $headers_0.sortable("destroy");
-      }
-      if (options.enableColumnReorder && $headers_1.sortable) {
-        $headers_1.sortable("destroy");
+
+      if (options.enableColumnReorder) {
+        if( options.numberOfColumnsToFreeze > 0){
+          $headers_0.filter(":ui-sortable").sortable("destroy");
+        }
+        $headers_1.filter(":ui-sortable").sortable("destroy");
       }
 
       unbindAncestorScrollEvents();
