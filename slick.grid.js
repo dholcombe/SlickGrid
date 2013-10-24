@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @license
  * (c) 2009-2012 Michael Leibman
  * michael{dot}leibman{at}gmail{dot}com
@@ -2928,7 +2928,9 @@ if (typeof Slick === "undefined") {
 		try {
 			//IE 8 fails here if selected element is in the DOM. No evidence of failure for newer IE versions
 			document.selection.empty();
-		} catch (e) { //eat the error }
+		} catch (e) { 
+			//eat the error
+		}
       } else if (window.getSelection) {
         var sel = window.getSelection();
         if (sel && sel.removeAllRanges) {
